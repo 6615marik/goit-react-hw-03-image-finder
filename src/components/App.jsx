@@ -6,6 +6,9 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { SearchBar } from './Searchbar/Searchbar';
 import { BASE_URL, API_KEY, SEARCH_PARAMS } from 'api/api';
 import { SpinnerLoader } from './Loader/Loader';
+import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
+import { Modal } from './Modal/Modal';
+import { Button } from './Button/Button';
 
 export class App extends Component {
   state = {
@@ -51,21 +54,31 @@ export class App extends Component {
       });
     }
   };
-
-  handelFormSubmit = imputValue => {
-    this.setState({ name: imputValue });
+  toggleModal = (imageURL, tag) => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+      largeImageURL: imageURL,
+      tags: tag,
+    }));
   };
-  //    loard = () => {
-  //   this.handelFormSubmit(this.state);
-  // };
+
+  loadMore = () => {
+    this.getValue(this.state);
+  };
 
   render() {
     const { hits, showModal, loading, largeImageURL, tags } = this.state;
     return (
       <div>
-        <SearchBar onSubmit={this.handelFormSubmit} />
+        <SearchBar onSubmitHandler={this.getValue} />
         {loading && <SpinnerLoader />}
-        <ImageGallery />
+        <ImageGallery>
+          <ImageGalleryItem articles={hits} onImage={this.toggleModal} />
+        </ImageGallery>
+        {showModal && (
+          <Modal onClose={this.toggleModal} url={largeImageURL} alt={tags} />
+        )}
+        {hits.length > 0 && <Button onButtonClick={() => this.loadMore()} />}
       </div>
     );
   }

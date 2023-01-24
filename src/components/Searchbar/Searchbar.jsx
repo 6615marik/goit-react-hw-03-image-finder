@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import Notiflix from 'notiflix';
+import css from './Searchbar.module.css';
 
 export class SearchBar extends Component {
   state = {
@@ -15,7 +16,8 @@ export class SearchBar extends Component {
   handlechangeForm = e => {
     e.preventDefault();
 
-    this.props.onSubmit(this.state);
+    this.props.onSubmitHandler(this.state);
+
     if (this.state.name.trim() === '') {
       Notiflix.Notify.warning('Enter something first to search for images!');
       return;
@@ -29,15 +31,15 @@ export class SearchBar extends Component {
 
   render() {
     return (
-      <header className="searchbar">
-        <form className="form" onSubmit={this.handlechangeForm}>
+      <header className={css.searchbar}>
+        <form className={css.form} onSubmit={this.handlechangeForm}>
           <button type="submit" className="button">
             <span className="button-label">Search</span>
           </button>
 
           <input
             value={this.state.name}
-            className="input"
+            className={css.input}
             type="text"
             autoComplete="off"
             autoFocus
