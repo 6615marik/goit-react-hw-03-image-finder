@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import Notiflix from 'notiflix';
 import css from './Searchbar.module.css';
 
@@ -15,9 +16,7 @@ export class SearchBar extends Component {
 
   handlechangeForm = e => {
     e.preventDefault();
-
     this.props.onSubmitHandler(this.state);
-
     if (this.state.name.trim() === '') {
       Notiflix.Notify.warning('Enter something first to search for images!');
       return;
@@ -36,7 +35,6 @@ export class SearchBar extends Component {
           <button type="submit" className="button">
             <span className="button-label">Search</span>
           </button>
-
           <input
             value={this.state.name}
             className={css.input}
@@ -51,3 +49,6 @@ export class SearchBar extends Component {
     );
   }
 }
+SearchBar.propTypes = {
+  onSubmitHandler: PropTypes.func.isRequired,
+};

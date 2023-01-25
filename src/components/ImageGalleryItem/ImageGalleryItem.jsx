@@ -5,7 +5,7 @@ export function ImageGalleryItem({ articles, onImage }) {
   return (
     <>
       {articles.map(({ id, webformatURL, largeImageURL, tags }) => (
-        <li className={css.ImageGalleryItem} key={id}>
+        <li className={css.image} key={id}>
           <img
             src={webformatURL}
             alt="response from API"
@@ -19,9 +19,13 @@ export function ImageGalleryItem({ articles, onImage }) {
 }
 
 ImageGalleryItem.propTypes = {
-  id: PropTypes.string,
-  webformatURL: PropTypes.string,
-  largeImageURL: PropTypes.string,
-  tags: PropTypes.string,
-  onImage: PropTypes.func,
+  onImage: PropTypes.func.isRequired,
+  articles: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      webformatURL: PropTypes.string.isRequired,
+      largeImageURL: PropTypes.string.isRequired,
+      tags: PropTypes.string.isRequired,
+    })
+  ),
 };
