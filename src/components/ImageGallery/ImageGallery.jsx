@@ -9,5 +9,5 @@ export class ImageGallery extends Component {
 }
 
 ImageGallery.propTypes = {
-  onButtonClick: PropTypes.node,
+  children: PropTypes.node,
 };

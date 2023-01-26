@@ -6,21 +6,22 @@ import css from './Searchbar.module.css';
 export class SearchBar extends Component {
   state = {
     name: '',
-    page: 1,
   };
 
   handlechangeImput = e => {
     const { value } = e.currentTarget;
-    this.setState({ name: value });
+    this.setState({ name: value.toLowerCase() });
   };
 
   handlechangeForm = e => {
     e.preventDefault();
-    this.props.onSubmitHandler(this.state);
+
     if (this.state.name.trim() === '') {
       Notiflix.Notify.warning('Enter something first to search for images!');
       return;
     }
+    // console.log(this.state);
+    this.props.onSubmitHandler(this.state.name);
     this.reset();
   };
 

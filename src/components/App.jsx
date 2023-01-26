@@ -19,29 +19,33 @@ export class App extends Component {
     loading: false,
     largeImageURL: '',
     tags: '',
+    showLoadMore: true,
   };
 
-  getValue = ({ name, page }) => {
-    this.setState({ loading: true });
+  componentDidUpdate(_, prevState) {
+    const { name, page } = this.state;
+    if (prevState.name !== name || prevState.page !== page) {
+      this.getValue();
+    }
+  }
+
+  getValue = () => {
+    const { name, page } = this.state;
+    // console.log(name);
+    this.setState({ loading: true, showLoadMore: true });
     axios
       .get(`${BASE_URL}?key=${API_KEY}&q=${name}&page=${page}&${SEARCH_PARAMS}`)
       .then(response => {
-        // console.log(response.data.hits);
+        console.log(response.data.hits);
         if (!response.data.hits.length) {
           Notiflix.Notify.failure('No images found!');
-        } else if (name === this.state.name) {
-          this.setState(state => ({
-            hits: [...state.hits, ...response.data.hits],
-            name: name,
-            page: state.page + 1,
-          }));
-        } else {
-          this.setState(state => ({
-            hits: response.data.hits,
-            name: name,
-            page: state.page + 1,
-          }));
         }
+        if (response.data.hits.length < 20) {
+          this.setState({ showLoadMore: false });
+        }
+        this.setState(state => ({
+          hits: [...state.hits, ...response.data.hits],
+        }));
       })
       .catch(error => {
         console.error(error.message);
@@ -61,15 +65,26 @@ export class App extends Component {
     }));
   };
 
+  valueFromInput = name => {
+    // console.log(name);
+    this.setState({ name: name, page: 1, hits: [] });
+  };
   loadMore = () => {
-    this.getValue(this.state);
+    this.setState(prev => ({ page: prev.page + 1 }));
   };
 
   render() {
-    const { hits, showModal, loading, largeImageURL, tags } = this.state;
+    const {
+      hits,
+      showModal,
+      showLoadMore,
+      loading,
+      largeImageURL,
+      tags,
+    } = this.state;
     return (
       <div>
-        <SearchBar onSubmitHandler={this.getValue} />
+        <SearchBar onSubmitHandler={this.valueFromInput} />
         {loading && <Circless />}
         <ImageGallery>
           <ImageGalleryItem articles={hits} onImage={this.toggleModal} />
@@ -77,7 +92,9 @@ export class App extends Component {
         {showModal && (
           <Modal onClose={this.toggleModal} url={largeImageURL} alt={tags} />
         )}
-        {hits.length > 0 && <Button onButtonClick={() => this.loadMore()} />}
+        {hits.length > 0 && showLoadMore && (
+          <Button onButtonClick={this.loadMore} />
+        )}
       </div>
     );
   }
