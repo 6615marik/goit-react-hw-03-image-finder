@@ -20,7 +20,7 @@ export class SearchBar extends Component {
       Notiflix.Notify.warning('Enter something first to search for images!');
       return;
     }
-    // console.log(this.state);
+    // console.log(this.state.name);
     this.props.onSubmitHandler(this.state.name);
     this.reset();
   };

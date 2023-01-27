@@ -4,7 +4,7 @@ import axios from 'axios';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 
 import { SearchBar } from './Searchbar/Searchbar';
-import { BASE_URL, API_KEY, SEARCH_PARAMS } from 'api/api';
+import { BASE_URL, API_KEY } from 'api/api';
 import { Circless } from './Loader/Loader';
 import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { Modal } from './Modal/Modal';
@@ -34,13 +34,15 @@ export class App extends Component {
     // console.log(name);
     this.setState({ loading: true, showLoadMore: true });
     axios
-      .get(`${BASE_URL}?key=${API_KEY}&q=${name}&page=${page}&${SEARCH_PARAMS}`)
+      .get(
+        `${BASE_URL}?key=${API_KEY}&q=${name}&page=${page}&image_type=photo&orientation=horizontal&per_page=12&safesearch=true`
+      )
       .then(response => {
         console.log(response.data.hits);
         if (!response.data.hits.length) {
           Notiflix.Notify.failure('No images found!');
         }
-        if (response.data.hits.length < 20) {
+        if (response.data.hits.length < 12) {
           this.setState({ showLoadMore: false });
         }
         this.setState(state => ({
